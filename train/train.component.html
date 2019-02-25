@@ -1,0 +1,92 @@
+<input type="submit" class="button" value="Re-run">
+<h3 *ngIf="wait_message_visible"><b>Wait Process in operation...</b></h3>
+<div class="row">
+
+  <div class="col">
+    <h3>Running Mode </h3>
+    <form #form1="ngForm" (ngSubmit)="onSubmit(form1.value)">
+      <input type="radio" value="1" name="mode" checked="True" required="required" [(ngModel)]="config.mode">
+      Train/Test
+      <input type="radio" value="2" name="mode" required="required" [(ngModel)]="config.mode" disabled> Test
+      <h3>Choose Dataset </h3>
+      <input type="radio" value="VOD" required="required" name="dataset" [(ngModel)]="config.dataset"> Vod
+      <input type="radio" value="GSK" required="required" name="dataset" [(ngModel)]="config.dataset"> Gsk
+      <input type="radio" value="NVDA" required="required" name="dataset" [(ngModel)]="config.dataset"> Nvda
+      <input type="radio" value="AAL" required="required" name="dataset" [(ngModel)]="config.dataset"> Aal
+      <input type="radio" value="APPL" required="required" name="dataset" [(ngModel)]="config.dataset"> Apple
+      <h3>Specify Training Iterations</h3>
+      <input type="radio" value="50" required="required" name="train_iter" [(ngModel)]="config.train_iter"> 50
+      <input type="radio" value="60" required="required" name="train_iter" [(ngModel)]="config.train_iter"> 60
+      <input type="radio" value="80" required="required" name="train_iter" [(ngModel)]="config.train_iter"> 80
+      <input type="radio" value="100" required="required" name="train_iter" [(ngModel)]="config.train_iter"> 100
+      <h3>Specify Backtest Iterations</h3>
+      <input type="radio" value="5" required="required" name="test_iter" [(ngModel)]="config.test_iter"> 5
+      <input type="radio" value="10" required="required" name="test_iter" [(ngModel)]="config.test_iter"> 10
+      <input type="radio" value="15" required="required" name="test_iter" [(ngModel)]="config.test_iter"> 15
+      <input type="radio" value="20" required="required" name="test_iter" [(ngModel)]="config.test_iter"> 20
+      <br /><br />
+      <input type="submit" class="button" *ngIf="train_div_visible">
+    </form>
+
+
+  </div>
+
+  <div class="col">
+    <h3>Tokens List</h3>
+    <ul class="nav">
+      <li *ngFor="let token of tokens">
+        <p (click)="select_token(token.token,token.dataset)">{{ token.token }} - {{token.dataset}}</p>
+      </li>
+    </ul>
+    <!-- <input type="submit" class="button" (click)="clear_token_list()" value="Clear"> -->
+  </div>
+
+  <div class="col">
+    <p>Training Logs : <b>{{token_to_logged}} - {{token_to_logged_dataset}}</b></p>
+    <table>
+      <tr>
+        <th>Episode</th>
+        <th>Reward</th>
+        <th>Profit/Loss</th>
+      </tr>
+      <tr *ngFor="let train_log of train_logs">
+        <td>{{train_log.episode}}</td>
+        <td>{{train_log.reward}}</td>
+        <td>{{train_log.pnl}}</td>
+      </tr>
+    </table>
+    <br />
+    <input type="submit" class="button" value="Get Logs" (click)="get_log(token_to_logged)">
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col">
+    <b>Training Graph</b>
+    <div>
+      <canvas id="canvas">{{ train_graph }}</canvas>
+    </div>
+  </div>
+
+  <div class="col">
+    <p>BackTest Logs : <b>{{token_to_logged}} - {{token_to_logged_dataset}}</b></p>
+    <table>
+      <tr>
+        <th>Episode Id</th>
+        <th>Reward</th>
+      </tr>
+      <tr *ngFor="let test_log of test_logs">
+        <td>{{test_log.Episode_Id}}</td>
+        <td>{{test_log.Reward}}</td>
+      </tr>
+    </table>
+
+  </div>
+  <div class="col">
+    <b (click)="show_backtest_graph()">Backtest Graph</b>
+    <div>
+      <canvas id="canvas1">{{ test_graph }}</canvas>
+    </div>
+  </div>
+</div>
